@@ -17,6 +17,8 @@ namespace XNodeEditor {
         public event Action onLateGUI;
         private static readonly Vector3[] polyLineTempArray = new Vector3[2];
 
+        public static XNode.Node Selected { get; set; }
+
         protected virtual void OnGUI() {
             Event e = Event.current;
             Matrix4x4 m = GUI.matrix;
@@ -409,7 +411,7 @@ namespace XNodeEditor {
 
                 GUILayout.BeginArea(new Rect(nodePos, new Vector2(nodeEditor.GetWidth(), 4000)));
 
-                bool selected = selectionCache.Contains(graph.nodes[n]);
+                bool selected = selectionCache.Contains(graph.nodes[n]) || graph.nodes[n] == Selected;
 
                 if (selected) {
                     GUIStyle style = new GUIStyle(nodeEditor.GetBodyStyle());
@@ -425,6 +427,8 @@ namespace XNodeEditor {
                     GUI.color = nodeEditor.GetTint();
                     GUILayout.BeginVertical(style);
                 }
+
+                Selected = null;
 
                 GUI.color = guiColor;
                 EditorGUI.BeginChangeCheck();
@@ -492,8 +496,8 @@ namespace XNodeEditor {
             if (e.type != EventType.Layout && currentActivity == NodeActivity.DragGrid) Selection.objects = preSelection.ToArray();
             EndZoomed(position, zoom, topPadding);
 
-            //If a change in is detected in the selected node, call OnValidate method. 
-            //This is done through reflection because OnValidate is only relevant in editor, 
+            //If a change in is detected in the selected node, call OnValidate method.
+            //This is done through reflection because OnValidate is only relevant in editor,
             //and thus, the code should not be included in build.
             if (onValidate != null && EditorGUI.EndChangeCheck()) onValidate.Invoke(Selection.activeObject, null);
         }
