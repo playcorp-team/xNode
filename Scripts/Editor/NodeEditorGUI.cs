@@ -428,8 +428,6 @@ namespace XNodeEditor {
                     GUILayout.BeginVertical(style);
                 }
 
-                Selected = null;
-
                 GUI.color = guiColor;
                 EditorGUI.BeginChangeCheck();
 
